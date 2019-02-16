@@ -95,8 +95,18 @@ function makeMap(isCity) {
           [positions[waypointReached].lat, positions[waypointReached].lng],
           { icon: carIcon }
         ).addTo(mymap)
+
+        // IOTA CALL
+        fetch('/user', {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, cors, *same-origin
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(positions[waypointReached]) // body data type must match "Content-Type" header
+        })
+
         waypointReached++
-        console.log(waypointReached)
       }
     })
   }

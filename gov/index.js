@@ -14,6 +14,10 @@ app.get('/user', function(req, res) {
   res.render('index', { isCity: false })
 })
 
+app.post('/user', function(req, res) {
+  //TODO: Call IOTA Transaction
+})
+
 app.disable('etag')
 
 // http://localhost:3000/getPrice?lat=1&long=2
