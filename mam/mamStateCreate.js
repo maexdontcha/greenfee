@@ -1,5 +1,6 @@
 const config = require('./config.json')
-const Mam = require('./lib/mam.client.js')
+const Mam = require('@iota/mam/lib/mam.client.js')
+
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 
 const mamStateCreate = () => {

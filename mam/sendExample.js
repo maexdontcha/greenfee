@@ -1,12 +1,13 @@
 const mamStateCreate = require('./mamStateCreate')
-const Mam = require('./lib/mam.client.js')
+const Mam = require('@iota/mam/lib/mam.client.js')
+
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 
 mamStateCreate().then(async mamState => {
   await publish(
     {
       key1: 'lalabasda',
-      message: 'GEHT DAS SO',
+      message: 'GEHT DAS SO 2',
       timestamp: new Date().toLocaleString()
     },
     mamState
