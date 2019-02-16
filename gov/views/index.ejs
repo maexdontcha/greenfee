@@ -34,6 +34,14 @@
         <% } %>
         <div class="map" id="themap"></div>
       </div>
+      <%if (!isCity) { %>
+      <div class="buttons-row">
+        <p>
+          <a id="reset-btn" class="button is-light">Reset</a>
+          <a id="next-btn" class="button is-primary">Next</a>
+        </p>
+      </div>
+      <% } %>
     </section>
     <script
       defer

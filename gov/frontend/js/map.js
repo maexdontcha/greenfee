@@ -4,7 +4,17 @@ import leaflet_routing_machine from 'leaflet-routing-machine'
 const ACCESS_TOKEN =
   'pk.eyJ1Ijoic3RhZG9sZiIsImEiOiJjanM3YjZvaGMwdzY5NDlybjlvNjIxZnYyIn0.9Hnl5-BzX0z3esU_Vzc8lA'
 
-const positions = []
+let positions = []
+let waypointReached = 0
+let routing
+let marker = {}
+var carIcon = L.icon({
+  iconUrl: 'img/car.png',
+  //  shadowUrl: 'leaf-shadow.png',
+
+  iconSize: [65, 27], // size of the icon
+  popupAnchor: [0, 0] // point from which the popup should open relative to the iconAnchor
+})
 
 function makeMap(isCity) {
   const mymap = L.map('themap').setView([48.779089, 9.172057], 12)
@@ -23,15 +33,6 @@ function makeMap(isCity) {
       const heat = L.heatLayer(json.heat, { radius: 25 }).addTo(mymap)
     })
   })
-
-  /*  const routing = L.Routing.control({
-        waypoints: [
-            L.latLng(48.8201197, 9.2593979),//BOSCH Autowerkstatt Fellbach
-            L.latLng(48.793130, 9.061087)
-        ]
-    }).addTo(mymap);
-
-    console.log(routing.getPlan())*/
 
   if (isCity) {
     mymap.on('click', function(e) {
@@ -54,6 +55,49 @@ function makeMap(isCity) {
           }
         })
       })
+    })
+  } else {
+    mymap.on('click', function(e) {
+      if (routing != null) routing.spliceWaypoints(0, positions.length - 1)
+      var popLocation = e.latlng
+      positions.push(popLocation)
+      routing = L.Routing.control({
+        addWaypoints: false,
+        createMarker: function() {
+          return null
+        },
+        waypoints: positions,
+        /*[
+          L.latLng(48.8201197, 9.2593979), //BOSCH Autowerkstatt Fellbach
+          L.latLng(48.79313, 9.061087)
+        ]*/ router: L.Routing.mapbox(
+          'pk.eyJ1Ijoic3RhZG9sZiIsImEiOiJjanM3YjZvaGMwdzY5NDlybjlvNjIxZnYyIn0.9Hnl5-BzX0z3esU_Vzc8lA'
+        )
+      }).addTo(mymap)
+    })
+
+    document.getElementById('reset-btn').addEventListener('click', function() {
+      routing.setWaypoints([])
+      if (marker != {}) {
+        mymap.removeLayer(marker)
+      }
+      marker = {}
+      positions = []
+      waypointReached = 0
+    })
+
+    document.getElementById('next-btn').addEventListener('click', function() {
+      if (waypointReached < positions.length) {
+        if (marker != {}) {
+          mymap.removeLayer(marker)
+        }
+        marker = L.marker(
+          [positions[waypointReached].lat, positions[waypointReached].lng],
+          { icon: carIcon }
+        ).addTo(mymap)
+        waypointReached++
+        console.log(waypointReached)
+      }
     })
   }
 }
