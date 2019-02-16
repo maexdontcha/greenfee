@@ -22,7 +22,7 @@ function makeMap(isCity) {
   L.tileLayer(
     `https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${ACCESS_TOKEN}`,
     {
-      maxZoom: 18,
+      maxZoom: 15,
       attribution: '',
       id: 'mapbox.streets'
     }
