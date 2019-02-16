@@ -23,6 +23,7 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "jquery": "^3.3.1",
+    "leaflet-routing-machine": "^3.2.12",
     "leaflet.heat": "git+https://github.com/Leaflet/Leaflet.heat.git",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7"

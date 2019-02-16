@@ -3,13 +3,13 @@ const axios = require('axios')
 module.exports = (lat, lon, distance) => {
     lat = lat || 48.779089
     lon = lon || 9.172057
-    distance = distance || 1000
+    distance = distance || 15000
 
     const url = 'https://public.opendatasoft.com/api/records/1.0/search/';
 
     const params = {
         dataset: 'api-luftdateninfo',
-        rows: 100,
+        rows: 1000,
         'geofilter.distance': `${lat}, ${lon}, ${distance}`
         //'refine.land': 'Baden-Württemberg'
     }

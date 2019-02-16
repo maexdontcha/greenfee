@@ -33,7 +33,7 @@ app.get('/getPrice', function (req, res) {
 
 
 app.get('/getHeat', function (req, res) {
-  const distance = req.query.radius || 10000
+  const distance = req.query.radius || 15000
 
   pollution(req.query.lat, req.query.lon, distance).then(result => {
     const entries = result.entries;
