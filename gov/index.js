@@ -1,6 +1,12 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 const app = express()
+
 const pollution = require('./lib/pollution')
+const mamStateCreate = require('../gov/lib/mamStateCreate')
+const publish = require('../gov/lib/publish')
+
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.set('view engine', 'ejs')
 
@@ -8,6 +14,27 @@ app.use(express.static('assets'))
 
 app.get('/', function (req, res) {
   res.render('index')
+})
+
+let _mamState = mamStateCreate();
+
+app.post('/msg', function (req, response) {
+  _mamState.then(async mamState => {
+    var t = new Date()
+    const res = await publish(
+      mamState,
+      {
+        d: t.toLocaleTimeString(),
+        hello: req.body.msg
+      },
+    );
+    //const nextRoot = res.mamState.channel.next_root;
+    nextRoot = res.root;
+    _mamState = Promise.resolve(res.mamState);
+    response.json(mamState)
+  }).catch(err => {
+    console.dir(err)
+  })
 })
 
 // http://localhost:3000/getPrice?lat=1&long=2
