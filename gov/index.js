@@ -7,7 +7,11 @@ app.set('view engine', 'ejs')
 app.use(express.static('assets'))
 
 app.get('/', function(req, res) {
-  res.render('index')
+  res.render('index', { isCity: true })
+})
+
+app.get('/user', function(req, res) {
+  res.render('index', { isCity: false })
 })
 
 app.disable('etag')

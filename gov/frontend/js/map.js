@@ -6,7 +6,7 @@ const ACCESS_TOKEN =
 
 const positions = []
 
-function makeMap() {
+function makeMap(isCity) {
   const mymap = L.map('themap').setView([48.779089, 9.172057], 12)
 
   L.tileLayer(
@@ -33,10 +33,12 @@ function makeMap() {
 
     console.log(routing.getPlan())*/
 
-  mymap.on('click', function(e) {
-    var popLocation = e.latlng
-    fetch('/getPrice?lat=' + popLocation.lat + '&lon=' + popLocation.lng).then(
-      res => {
+  if (isCity) {
+    mymap.on('click', function(e) {
+      var popLocation = e.latlng
+      fetch(
+        '/getPrice?lat=' + popLocation.lat + '&lon=' + popLocation.lng
+      ).then(res => {
         res.json().then(json => {
           if (json.price) {
             var popup = L.popup()
@@ -51,9 +53,9 @@ function makeMap() {
               .openOn(mymap)
           }
         })
-      }
-    )
-  })
+      })
+    })
+  }
 }
 
 export { makeMap }
