@@ -15,6 +15,10 @@ app.get('/', function (req, res) {
   res.render('index', { isCity: true })
 })
 
+app.get('/user', function (req, res) {
+  res.render('index', { isCity: false })
+})
+
 let _mamState = mamStateCreate();
 
 app.post('/msg', function (req, response) {
