@@ -24,6 +24,7 @@ const createAccountBalance = async myRoot => {
 
 module.exports = createAccountBalance
 
-createAccountBalance(config.myRoot).then(data => {
-  console.log(data)
-})
+// Example
+// createAccountBalance(config.myRoot).then(data => {
+//   console.log(data)
+// })
