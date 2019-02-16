@@ -13,15 +13,16 @@ app.get('/', function(req, res) {
 
 // http://localhost:3000/getPrice?lat=1&long=2
 app.get('/getPrice', function(req, res) {
-  let lat = req.query.lat || 9.152
-  let long = req.query.long || 48.734
+  let lat = req.query.lat || 48.779089
+  let long = req.query.long || 9.172057
   let distance = 1000
+
   let url =
     'https://public.opendatasoft.com/api/records/1.0/search/' +
     '?dataset=api-luftdateninfo&facet=timestamp&facet=land' +
-    '&facet=value_type&facet=sensor_manufacturer&facet=sensor_name*' +
+    '&facet=value_type&facet=sensor_manufacturer&facet=sensor_name' +
     '&refine.land=Baden-W%C3%BCrttemberg' +
-    '&geofilter.distance=%' +
+    '&geofilter.distance=' +
     lat +
     '%2C+' +
     long +
@@ -35,9 +36,24 @@ app.get('/getPrice', function(req, res) {
         api: url
       })
     } else {
+      let entries = JSON.parse(body).records
+      //console.log(entries)
+
+      let sum = 0
+      //EVTL erst die mit 2.5PM und dann die mit 10 PM rausfiltern
+      for (var i in entries) {
+        if (entries[i].fields) {
+          sum += entries[i].fields.value
+        }
+      }
+
+      averageEmission = sum / entries.length
+      multiplicator = 1.5
+
       res.json({
         status: 'ok',
-        price: 151,
+        averageEmission: averageEmission,
+        price: averageEmission * multiplicator,
         unit: 'cent'
       })
     }
