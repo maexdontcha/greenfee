@@ -1,1 +1,13 @@
-.map, #themap { height: 800px; }
+.map,
+#themap {
+  height: 800px;
+}
+
+.user-icon {
+  width: 32px;
+  padding-left: 3px;
+}
+
+.user-icon > img {
+  border-radius: 10px;
+}
