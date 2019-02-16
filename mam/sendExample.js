@@ -1,4 +1,4 @@
-const mamStateCreate = require('./index')
+const mamStateCreate = require('./mamStateCreate')
 const Mam = require('./lib/mam.client.js')
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 
