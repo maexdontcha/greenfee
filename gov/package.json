@@ -1,0 +1,21 @@
+{
+  "name": "gov",
+  "version": "0.0.1",
+  "description": "Green-fee-webserver",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "control",
+    "city",
+    "tax",
+    "fee",
+    "greenfee"
+  ],
+  "author": "Stefan, Stefan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
