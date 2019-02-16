@@ -1,6 +1,6 @@
 .map,
 #themap {
-  height: 800px;
+  height: 600px;
 }
 
 #themap .leaflet-routing-container.leaflet-bar.leaflet-control {
@@ -9,11 +9,11 @@
 
 .user-icon {
   width: 32px;
-  padding-left: 3px;
+  margin-left: 15px;
 }
 
 .user-icon > img {
-  border-radius: 10px;
+  border-radius: 200px;
 }
 
 .buttons-row {
@@ -22,4 +22,8 @@
 
 .buttons-row > p {
   text-align: center;
+}
+
+.leaflet-heatmap-layer {
+  opacity: 0.8;
 }

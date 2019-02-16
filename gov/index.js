@@ -48,15 +48,21 @@ app.get('/getHeat', function(req, res) {
     .then(result => {
       const entries = result.entries
       const heat = []
-      for (var i in entries) {
-        let heatpoint = []
-        if (entries[i].fields) {
-          heatpoint.push(entries[i].fields.location[0])
-          heatpoint.push(entries[i].fields.location[1])
-          heatpoint.push(entries[i].fields.value / 3)
-        }
+      for (var j = 4; j-- > 0; ) {
+        for (var i in entries) {
+          let heatpoint = []
+          if (entries[i].fields) {
+            heatpoint.push(
+              entries[i].fields.location[0] + (Math.random() - 0.5) / 70
+            )
+            heatpoint.push(
+              entries[i].fields.location[1] + (Math.random() - 0.5) / 70
+            )
+            heatpoint.push(entries[i].fields.value / 5)
+          }
 
-        heat.push(heatpoint)
+          heat.push(heatpoint)
+        }
       }
       res.json({ heat: heat })
     })

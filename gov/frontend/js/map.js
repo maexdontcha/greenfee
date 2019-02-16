@@ -17,12 +17,12 @@ var carIcon = L.icon({
 })
 
 function makeMap(isCity) {
-  const mymap = L.map('themap').setView([48.779089, 9.172057], 12)
+  const mymap = L.map('themap').setView([48.779089, 9.172057], 11)
 
   L.tileLayer(
     `https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${ACCESS_TOKEN}`,
     {
-      maxZoom: 15,
+      maxZoom: 14,
       attribution: '',
       id: 'mapbox.streets'
     }
