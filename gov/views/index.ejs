@@ -27,7 +27,11 @@
 
     <section class="section">
       <div class="container">
+        <%if (isCity) { %>
         <h1>Emission overview</h1>
+        <% } else{ %>
+        <h1>Robert's trip</h1>
+        <% } %>
         <div class="map" id="themap"></div>
       </div>
     </section>
