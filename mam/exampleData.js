@@ -1,5 +1,5 @@
 const mamStateCreate = require('./mamStateCreate')
-const Mam = require('./lib/mam.client.js')
+const Mam = require('@iota/mam/lib/mam.client.js')
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 
 const publish = async (packet, mamState) => {
