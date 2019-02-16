@@ -4,6 +4,8 @@ const request = require('request')
 
 app.set('view engine', 'ejs')
 
+app.use(express.static('assets'))
+
 app.get('/', function(req, res) {
   //res.send('Greenfee says hi!')
   res.render('index')
