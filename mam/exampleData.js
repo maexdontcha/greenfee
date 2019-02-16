@@ -23,71 +23,90 @@ mamStateCreate().then(async mamState => {
     {
       currentRateIOTA: 2.2,
       amountExhaustEmissions: 500,
-      timestamp: t.toLocaleString()
+      timestamp: t.toLocaleString(),
+      currentRoot: mamState.channel.next_root
     },
     mamState
   )
-  t.setSeconds(t.getSeconds() + sec)
   await publish(
     {
-      currentRateIOTA: 2.1,
-      amountExhaustEmissions: 350,
-      timestamp: t.toLocaleString()
-    },
-    mamState
-  )
-  t.setSeconds(t.getSeconds() + sec)
-  await publish(
-    {
-      currentRateIOTA: 2.5,
-      amountExhaustEmissions: 350,
-      timestamp: t.toLocaleString()
-    },
-    mamState
-  )
-  t.setSeconds(t.getSeconds() + sec)
-  await publish(
-    {
-      currentRateIOTA: 1.8,
-      amountExhaustEmissions: 350,
-      timestamp: t.toLocaleString()
-    },
-    mamState
-  )
-  t.setSeconds(t.getSeconds() + sec)
-  await publish(
-    {
-      currentRateIOTA: 2.7,
-      amountExhaustEmissions: 200,
-      timestamp: t.toLocaleString()
-    },
-    mamState
-  )
-  t.setSeconds(t.getSeconds() + sec)
-  await publish(
-    {
-      currentRateIOTA: 2.1,
-      amountExhaustEmissions: 100,
-      timestamp: t.toLocaleString()
-    },
-    mamState
-  )
-  t.setSeconds(t.getSeconds() + sec)
-  await publish(
-    {
-      currentRateIOTA: 2.21,
+      currentRateIOTA: 2.2,
       amountExhaustEmissions: 500,
-      timestamp: t.toLocaleString()
+      timestamp: t.toLocaleString(),
+      currentRoot: mamState.channel.next_root
     },
     mamState
   )
-  t.setSeconds(t.getSeconds() + sec)
   await publish(
     {
-      currentRateIOTA: 3.2,
-      amountExhaustEmissions: 320,
-      timestamp: t.toLocaleString()
+      currentRateIOTA: 2.2,
+      amountExhaustEmissions: 500,
+      timestamp: t.toLocaleString(),
+      currentRoot: mamState.channel.next_root
     },
     mamState
   )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 2.1,
+  //     amountExhaustEmissions: 350,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 2.5,
+  //     amountExhaustEmissions: 350,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 1.8,
+  //     amountExhaustEmissions: 350,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 2.7,
+  //     amountExhaustEmissions: 200,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 2.1,
+  //     amountExhaustEmissions: 100,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 2.21,
+  //     amountExhaustEmissions: 500,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
+  // t.setSeconds(t.getSeconds() + sec)
+  // await publish(
+  //   {
+  //     currentRateIOTA: 3.2,
+  //     amountExhaustEmissions: 320,
+  //     timestamp: t.toLocaleString()
+  //   },
+  //   mamState
+  // )
 })

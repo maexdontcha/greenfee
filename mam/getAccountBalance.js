@@ -1,0 +1,66 @@
+const config = require('./config.json')
+const composeAPI = require('@iota/core')
+const converter = require('@iota/converter')
+
+const iota = composeAPI.composeAPI({
+  provider: 'https://nodes.devnet.iota.org'
+})
+
+const seed = config.seed
+const options = {}
+
+const carPaidSummery = () => {
+  return new Promise(async (resolve, recect) => {
+    await iota.findTransactions(
+      {
+        addresses: [config.greenfeeAdresse],
+        tags: [converter.asciiToTrytes(config.tag)]
+      },
+      (err, hashes) => {
+        if (err) throw err
+        iota
+          .getTransactionObjects(hashes)
+          .then(transactions => {
+            // console.log(transactions)
+            const reducer = (accumulator, currentValue) =>
+              accumulator.value + currentValue.value
+            resolve(transactions.reduce(reducer))
+          })
+          .catch(err => {
+            throw err
+          })
+      }
+    )
+  })
+}
+
+carPaidSummery().then(payed => {
+  console.log(payed)
+})
+
+// iota
+//   .getBalances(
+//     [
+//       'KFXPGYDC9AJWTYOTSZSAKCYYKA9KTDLOCFEHFZVCKYX9JDJICATJOMAVVVSTHDWXFOXYPFFIQPJXAFMGDWDFTHJKOD'
+//     ],
+//     100
+//   )
+//   .then(({ balances }) => {
+//     console.log(balances)
+//   })
+//   .catch(err => {
+//     // ...
+//   })
+
+// iota
+//   .getAccountData(config.seed, {
+//     start: 0,
+//     security: 2
+//   })
+//   .then(accountData => {
+//     const { addresses, inputs, transactions, balance } = accountData
+//     console.log(balance)
+//   })
+//   .catch(err => {
+//     // ...
+//   })

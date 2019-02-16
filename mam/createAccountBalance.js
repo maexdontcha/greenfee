@@ -1,5 +1,5 @@
 const config = require('./config.json')
-const Mam = require('./lib/mam.client.js')
+const Mam = require('@iota/mam/lib/mam.client.js')
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 
 const mode = 'public'
@@ -9,6 +9,7 @@ let mamState = Mam.init(provider, config.seed, 2)
 let balance = 0
 const logData = data => {
   const message = JSON.parse(trytesToAscii(data))
+  console.log(message)
   if (message.currentRateIOTA && message.amountExhaustEmissions) {
     balance += message.currentRateIOTA * message.amountExhaustEmissions
   }
@@ -17,7 +18,8 @@ const logData = data => {
 
 const createAccountBalance = async myRoot => {
   return new Promise(async (resolve, reject) => {
-    await Mam.fetch(myRoot, mode, null, logData)
+    const x = await Mam.fetch(myRoot, mode, null, logData)
+
     resolve(balance)
   })
 }
@@ -25,6 +27,6 @@ const createAccountBalance = async myRoot => {
 module.exports = createAccountBalance
 
 // Example
-// createAccountBalance(config.myRoot).then(data => {
-//   console.log(data)
-// })
+createAccountBalance(config.myRoot).then(data => {
+  console.log(data)
+})
