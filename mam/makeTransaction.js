@@ -1,67 +1,39 @@
-const config = require('./config.json')
+const config = require('../config.json')
 const composeAPI = require('@iota/core')
-const converter = require('@iota/converter')
 
 const iota = composeAPI.composeAPI({
-  provider: 'https://nodes.devnet.iota.org'
+  provider: config.provider
 })
 
-const seed = config.seed
 const options = {}
-
-iota.getNewAddress(seed, options, (error, address) => {
-  if (error) console.error(error)
-  console.log('Got address: ' + address)
-
-  const transfers = [
-    {
-      address:
-        'KFXPGYDC9AJWTYOTSZSAKCYYKA9KTDLOCFEHFZVCKYX9JDJICATJOMAVVVSTHDWXFOXYPFFIQPJXAFMGDWDFTHJKOD',
-      value: 100,
-      message: converter.asciiToTrytes('stefan says: crazy!'),
-      tag: converter.asciiToTrytes('pothole')
-    }
-  ]
+const makeTransaction = async (transfers) => {
+  // const transfersx = [
+  //   {
+  //     address:
+  //       'KFXPGYDC9AJWTYOTSZSAKCYYKA9KTDLOCFEHFZVCKYX9JDJICATJOMAVVVSTHDWXFOXYPFFIQPJXAFMGDWDFTHJKOD',
+  //     value: 30,
+  //     message: converter.asciiToTrytes('set balance to 0'),
+  //     tag: converter.asciiToTrytes(config.tag)
+  //   }
+  // ]
+  //console.log(transfers)
 
   // Depth for the tip selection
   const depth = 4
   // If we're on the mainnet, minWeightMagnitude is 18
-  const minWeightMagnitude = 14
+  const minWeightMagnitude = 9
 
-  iota
-    .prepareTransfers(seed, transfers)
-    .then(trytes => {
-      // Persist trytes locally before sending to network.
-      // This allows for reattachments and prevents key reuse if trytes can't
-      // be recovered by querying the network after broadcasting.
+  try {
+    const trytes = await iota.prepareTransfers(config.seed, transfers)
 
-      // Does tip selection, attaches to tangle by doing PoW and broadcasts.
-      return iota.sendTrytes(trytes, depth, minWeightMagnitude)
-    })
-    .then(bundle => {
-      console.log(`Published transaction with tail hash: ${bundle[0].hash}`)
-      console.log(`Bundle: ${bundle}`)
-    })
-    .catch(err => {
-      if (err) throw err
-    })
+    const bundle = await iota.sendTrytes(trytes, depth, minWeightMagnitude)
+    console.log(`Published transaction with tail hash: ${bundle[0].hash}`)
+    console.dir(bundle)
+    return bundle;
+  } catch (err) {
+    console.dir(err)
+    return null;
+  }
+}
 
-  // Call the sendTransfer API wrapper function
-  // It takes care prepareTransfers, attachToTangle, broadcast and storeTransactions
-  //   iota.api.sendTransfer(
-  //     seed,
-  //     depth,
-  //     minWeightMagnitude,
-  //     transfer,
-  //     (error, attached) => {
-  //       if (error) {
-  //         console.error(error)
-  //         return
-  //       }
-  //       console.log(
-  //         'Successfully attached your transaction to the Tangle with transaction',
-  //         attached
-  //       )
-  //     }
-  //   )
-})
+module.exports = makeTransaction
