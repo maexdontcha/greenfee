@@ -1,4 +1,4 @@
-const config = require('./config.json')
+const config = require('../config.json')
 const composeAPI = require('@iota/core')
 
 const iota = composeAPI.composeAPI({
@@ -31,7 +31,8 @@ const makeTransaction = async (transfers) => {
     console.dir(bundle)
     return bundle;
   } catch (err) {
-    console.dir(err);
+    console.dir(err)
+    return null;
   }
 }
 

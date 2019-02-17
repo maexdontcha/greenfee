@@ -1,7 +1,7 @@
-const config = require('./config.json')
+const config = require('../config.json')
 const Mam = require('@iota/mam/lib/mam.client.js')
 const extractJson = require('@iota/extract-json')
-
+const path = require('path')
 const fs = require('fs');
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 const makeTransaction = require('./makeTransaction')
@@ -11,7 +11,7 @@ const iota = iotaCore.composeAPI({
   provider: config.provider
 })
 
-const LAST_ROOT_FILENAME = __dirname + '/_lastRoot';
+const LAST_STATE_FILENAME = path.normalize(__dirname + '/../_lastState');
 const CONFIG_MODE = 'public';
 
 const finalizeBundle = async (bundle, tag) => {
@@ -26,7 +26,8 @@ const finalizeBundle = async (bundle, tag) => {
     tag
   }
 
-  await makeTransaction([transaction])
+  const txResult = await makeTransaction([transaction])
+  return txResult;
 }
 
 const createBundle = (root, messages) => {
@@ -45,36 +46,55 @@ const createBundle = (root, messages) => {
   return bundle;
 }
 
-const tag = config.tag + asciiToTrytes(config.licensePlate)
+async function poll(lastState, transactions) {
 
-async function poll(root, mamState, transactions) {
-  const result = await Mam.fetch(root, CONFIG_MODE)
-  if (result.messages.length >= 10) {
-    const bundle = createBundle(root, result.messages);
-    bundle.nextRoot = result.nextRoot
-    await finalizeBundle(bundle, tag);
-    fs.writeFileSync(LAST_ROOT_FILENAME, result.nextRoot)
+  const result = await Mam.fetch(lastState.currentRoot, CONFIG_MODE)
+
+  if (result.messages.length >= 2) {
+    const bundle = createBundle(lastState.currentRoot, result.messages);
+    bundle.lastRoot = lastState.lastRoot
+    txResult = await finalizeBundle(bundle, tag);
+    if (txResult != null) {
+      lastState.currentRoot = lastState.lastRoot
+      fs.writeFileSync(LAST_STATE_FILENAME, JSON.stringify(lastState))
+    }
   }
-  setTimeout(() => { poll(mamState) }, 1000)
+  return lastState;
 }
 
-const mamState = Mam.init(config.provider)
+const tag = config.tag + asciiToTrytes(config.licensePlate)
+//const mamState = Mam.init(config.provider, config.seed);
+let lastState = fs.existsSync(LAST_STATE_FILENAME) ? fs.readFileSync(LAST_STATE_FILENAME).toString() : null;
+if (lastState) {
+  lastState = JSON.parse(lastState);
+}
 
-  (function () {
-    iota.findTransactionObjects({
-      addresses: [config.greenfeeAddress],
-      tags: [tag] //config.greenfeeAddress
-    }).then(transactions => {
-      let currentRoot = fs.existsSync(LAST_ROOT_FILENAME) ? fs.readFileSync(LAST_ROOT_FILENAME).toString() : null;
+(function () {
+  if (!lastState) {
+    return; //nothing to read.
+  }
+
+  let mamState = Mam.init(config.provider)
+
+  iota.findTransactionObjects({
+    addresses: [config.greenfeeAddress],
+    tags: [tag] //config.greenfeeAddress
+  }).then(transactions => {
+    poll(lastState, transactions).then(lastState => {
       if (transactions.length > 0) {
         const latestTransaction = transactions[0]; //is that correct??
         iota.getBundle(latestTransaction.hash).then(bundle => {
           const message = JSON.parse(extractJson.extractJson(bundle));
-          const root = currentRoot || message.nextRoot
-          poll(root, mamState, transactions)
+          //const root = currentRoot || message.nextRoot
+          //poll(root, mamState, transactions)
+
+          //todo: the last root in the tx should be the current root.
         }).catch(err => console.dir(err))
       } else {
 
       }
-    }).catch(err => console.log(err))
-  })()
+    })
+
+
+  }).catch(err => console.log(err))
+})()

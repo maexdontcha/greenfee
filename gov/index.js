@@ -1,11 +1,13 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const Mam = require('@iota/mam/lib/mam.client.js')
 const fs = require("fs");
+const path = require('path')
 const app = express()
 
 const pollution = require('./lib/pollution')
-const mamStateCreate = require('../gov/lib/mamStateCreate')
 const publish = require('../gov/lib/publish')
+const config = require('../config.json')
 
 app.use(bodyParser.json())
 app.set('view engine', 'ejs')
@@ -13,7 +15,7 @@ app.use(express.static('assets'))
 app.disable('etag')
 
 const CURRENT_IOTA_EXCHANGE = 0.0026;
-const LAST_ROOT_FILENAME = __dirname + '/_lastRoot';
+const LAST_STATE_FILENAME = path.normalize(__dirname + '/../_lastState');
 
 app.get('/', function (req, res) {
   res.render('index', { isCity: true })
@@ -23,30 +25,32 @@ app.get('/user', function (req, res) {
   res.render('index', { isCity: false })
 })
 
-const lastRoot = fs.existsSync(LAST_ROOT_FILENAME) ? fs.readFileSync(LAST_ROOT_FILENAME).toString() : null;
-let _mamState = mamStateCreate(lastRoot);
+const mamState = Mam.init(config.provider, config.seed);
+const lastState = fs.existsSync(LAST_STATE_FILENAME) ? fs.readFileSync(LAST_STATE_FILENAME).toString() : null;
+if (lastState) {
+  mamState.channel = JSON.parse(lastState);
+}
+//let _mamState = mamStateCreate(lastRoot);
 
-app.post('/msg', function (req, response) {
-  _mamState.then(async mamState => {
-    var t = new Date()
-    const payload = {
-      d: t.toLocaleDateString() + " " + t.toLocaleTimeString(),
-      data: req.body
-    };
-    //console.log(payload)
-    //return response.json(payload)
+app.post('/msg', async function (req, response) {
+  var t = new Date()
+  const payload = {
+    d: t.toLocaleDateString() + " " + t.toLocaleTimeString(),
+    data: req.body
+  };
+  //console.log(payload)
+  //return response.json(payload)
 
-    const res = await publish(
-      mamState,
-      payload
-    );
-    nextRoot = res.root;
-    fs.writeFileSync(LAST_ROOT_FILENAME, nextRoot)
-    _mamState = Promise.resolve(res.mamState);
-    response.json(mamState)
-  }).catch(err => {
-    console.dir(err)
-  })
+  const res = await publish(
+    mamState,
+    payload
+  );
+  if (!mamState.channel.currentRoot) {
+    mamState.channel.currentRoot = res.root;
+  }
+  mamState.channel.lastRoot = res.root
+  fs.writeFileSync(LAST_STATE_FILENAME, JSON.stringify(mamState.channel))
+  response.json(mamState)
 })
 
 // http://localhost:3000/getPrice?lat=1&long=2&exhaust=500
