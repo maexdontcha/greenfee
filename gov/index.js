@@ -12,7 +12,7 @@ app.set('view engine', 'ejs')
 app.use(express.static('assets'))
 app.disable('etag')
 
-const CURRENT_IOTA_EXCHANGE = 0.00026;
+const CURRENT_IOTA_EXCHANGE = 0.0026;
 const LAST_ROOT_FILENAME = __dirname + '/_lastRoot';
 
 app.get('/', function (req, res) {
@@ -56,22 +56,32 @@ app.get('/getPrice', function (req, res) {
 
   pollution(req.query.lat, req.query.lon, distance)
     .then(result => {
-      const price = exhaust * result.averageEmission / 50;
-      const out = {
-        status: 'ok',
-        averageEmission: result.averageEmission,
-        yourEmission: exhaust,
-        prices: [
-          {
-            price,
-            unit: 'i'
-          },
-          {
-            price: price * CURRENT_IOTA_EXCHANGE,
-            unit: 'e'
-          }
-        ]
+      let out;
+
+      if (result.averageEmission) {
+        const price = exhaust * result.averageEmission / 20;
+        out = {
+          avg: Math.round(result.averageEmission),
+          emission: Number.parseFloat(exhaust).toFixed(2),
+          prices: [
+            {
+              price: Math.round(price),
+              unit: 'i'
+            },
+            {
+              price: Number.parseFloat(price * CURRENT_IOTA_EXCHANGE).toFixed(2),
+              unit: 'e'
+            }
+          ]
+        }
+      } else {
+        out = {
+          avg: 0,
+          emission: exhaust,
+          prices: []
+        }
       }
+
       res.json(out)
     })
     .catch(err => {

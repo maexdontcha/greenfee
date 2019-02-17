@@ -1,6 +1,6 @@
 function renderLabel(response) {
-    const prices = response.prices.map(p => `${p.price.toFixed(2)}${p.unit}`)
-    return `<p>Avg emissions here are: ${response.averageEmission} <br />
+    const prices = response.prices.map(p => `${p.price}${p.unit}`)
+    return `<p>Avg emissions here are: ${response.avg} <br />
         ${prices.join('<br/>')}
         </p>`;
 }
@@ -11,7 +11,7 @@ export default function (mymap) {
             '/getPrice?lat=' + popLocation.lat + '&lon=' + popLocation.lng
         ).then(res => {
             res.json().then(json => {
-                if (json.averageEmission) {
+                if (json.avg) {
                     var popup = L.popup()
                         .setLatLng(popLocation)
                         .setContent(

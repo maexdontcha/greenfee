@@ -63,7 +63,10 @@ export default function (mymap) {
       fetch(
         '/getPrice?lat=' + position.lat + '&lon=' + position.lng + '&exhaust=' + exhaust
       ).then(res => res.json().then(computedPrice => {
-        signal(position, computedPrice)
+        if (computedPrice.avg > 0) {
+          signal(position, computedPrice)
+        }
+
         waypointReached++
       }))
     }
@@ -73,8 +76,8 @@ export default function (mymap) {
 function signal(position, computedPrice, e) {
 
   const payload = {
-    position,
-    computedPrice
+    p: position,
+    price: computedPrice
   }
 
   fetch('/msg', {
