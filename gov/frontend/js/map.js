@@ -26,7 +26,7 @@ function makeMap(elemId) {
   if (isCity) {
     cityMap(mymap)
   } else {
-    clientMap(mymap)
+    clientMap(mymap, $('#sidebar'))
   }
   return mymap
 }
