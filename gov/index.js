@@ -30,7 +30,7 @@ app.post('/msg', function (req, response) {
   _mamState.then(async mamState => {
     var t = new Date()
     const payload = {
-      d: t.toLocaleDateString(),
+      d: t.toLocaleDateString() + " " + t.toLocaleTimeString(),
       data: req.body
     };
     //console.log(payload)

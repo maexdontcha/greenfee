@@ -1,6 +1,7 @@
 const config = require('./config.json')
 const Mam = require('@iota/mam/lib/mam.client.js')
-const converter = require('@iota/converter')
+const extractJson = require('@iota/extract-json')
+
 const fs = require('fs');
 const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 const makeTransaction = require('./makeTransaction')
@@ -13,7 +14,7 @@ const iota = iotaCore.composeAPI({
 const LAST_ROOT_FILENAME = __dirname + '/_lastRoot';
 const CONFIG_MODE = 'public';
 
-const finalizeBundle = (bundle, tag) => {
+const finalizeBundle = async (bundle, tag) => {
   const payload = asciiToTrytes(JSON.stringify(bundle))
   //if amount < my seed balance....
 
@@ -25,7 +26,7 @@ const finalizeBundle = (bundle, tag) => {
     tag
   }
 
-  makeTransaction(transaction)
+  await makeTransaction([transaction])
 }
 
 const createBundle = (root, messages) => {
@@ -51,19 +52,29 @@ async function poll(root, mamState, transactions) {
   if (result.messages.length >= 10) {
     const bundle = createBundle(root, result.messages);
     bundle.nextRoot = result.nextRoot
-    finalizeBundle(bundle, tag);
+    await finalizeBundle(bundle, tag);
+    fs.writeFileSync(LAST_ROOT_FILENAME, result.nextRoot)
   }
   setTimeout(() => { poll(mamState) }, 1000)
 }
 
-(function () {
-  iota.findTransactionObjects({
-    tags: [tag] //config.greenfeeAddress
-  }).then(transactions => {
-    let currentRoot = fs.existsSync(LAST_ROOT_FILENAME) ? fs.readFileSync(LAST_ROOT_FILENAME).toString() : null;
-    const root = currentRoot || null
-    //mamState = await mamStateCreate(root)
-    let mamState = Mam.init(config.provider)
-    poll(root, mamState, transactions)
-  }).catch(err => console.log(err))
-})()
+const mamState = Mam.init(config.provider)
+
+  (function () {
+    iota.findTransactionObjects({
+      addresses: [config.greenfeeAddress],
+      tags: [tag] //config.greenfeeAddress
+    }).then(transactions => {
+      let currentRoot = fs.existsSync(LAST_ROOT_FILENAME) ? fs.readFileSync(LAST_ROOT_FILENAME).toString() : null;
+      if (transactions.length > 0) {
+        const latestTransaction = transactions[0]; //is that correct??
+        iota.getBundle(latestTransaction.hash).then(bundle => {
+          const message = JSON.parse(extractJson.extractJson(bundle));
+          const root = currentRoot || message.nextRoot
+          poll(root, mamState, transactions)
+        }).catch(err => console.dir(err))
+      } else {
+
+      }
+    }).catch(err => console.log(err))
+  })()

@@ -6,7 +6,7 @@ const iota = composeAPI.composeAPI({
 })
 
 const options = {}
-const makeTransaction = transfers => {
+const makeTransaction = async (transfers) => {
   // const transfersx = [
   //   {
   //     address:
@@ -19,28 +19,20 @@ const makeTransaction = transfers => {
   //console.log(transfers)
 
   // Depth for the tip selection
-  const depth = 3
+  const depth = 4
   // If we're on the mainnet, minWeightMagnitude is 18
   const minWeightMagnitude = 9
 
-  iota
-    .prepareTransfers(config.seed, transfers)
-    .then(trytes => {
-      // Persist trytes locally before sending to network.
-      // This allows for reattachments and prevents key reuse if trytes can't
-      // be recovered by querying the network after broadcasting.
+  try {
+    const trytes = await iota.prepareTransfers(config.seed, transfers)
 
-      // Does tip selection, attaches to tangle by doing PoW and broadcasts.
-      return iota.sendTrytes(trytes, depth, minWeightMagnitude)
-    })
-    .then(bundle => {
-      console.log(`Published transaction with tail hash: ${bundle[0].hash}`)
-      console.log(`Bundle: ${bundle}`)
-    })
-    .catch(err => {
-      if (err) throw err
-    })
-
+    const bundle = await iota.sendTrytes(trytes, depth, minWeightMagnitude)
+    console.log(`Published transaction with tail hash: ${bundle[0].hash}`)
+    console.dir(bundle)
+    return bundle;
+  } catch (err) {
+    console.dir(err);
+  }
 }
 
 module.exports = makeTransaction
