@@ -9,11 +9,11 @@ const iota = composeAPI.composeAPI({
 const seed = config.seed
 const options = {}
 
-const carPaidSummery = () => {
-  return new Promise(async (resolve, recect) => {
+const carPaidSummary = () => {
+  return new Promise(async (resolve, reject) => {
     await iota.findTransactions(
       {
-        addresses: [config.greenfeeAdresse],
+        addresses: [config.greenfeeAddress],
         tags: [converter.asciiToTrytes(config.tag)]
       },
       (err, hashes) => {
@@ -34,7 +34,7 @@ const carPaidSummery = () => {
   })
 }
 
-carPaidSummery().then(payed => {
+carPaidSummary().then(payed => {
   console.log(payed)
 })
 
