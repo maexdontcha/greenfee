@@ -18,7 +18,6 @@ module.exports = (lat, lon, distance) => {
         axios.get(url, { params }).then(response => {
 
             const entries = response.data.records
-            console.log(entries.length)
 
             let sum = 0
             //EVTL erst die mit 2.5PM und dann die mit 10 PM rausfiltern
@@ -27,11 +26,9 @@ module.exports = (lat, lon, distance) => {
                     sum += entries[i].fields.value
                 }
             }
-            const multiplicator = 1.5;
             const averageEmission = sum / entries.length;
             resolve({
                 averageEmission,
-                price: averageEmission * multiplicator,
                 entries
             })
 

@@ -1,15 +1,19 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const fs = require("fs");
 const app = express()
 
 const pollution = require('./lib/pollution')
 const mamStateCreate = require('../gov/lib/mamStateCreate')
 const publish = require('../gov/lib/publish')
 
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.set('view engine', 'ejs')
 app.use(express.static('assets'))
 app.disable('etag')
+
+const CURRENT_IOTA_EXCHANGE = 0.00026;
+const LAST_ROOT_FILENAME = __dirname + '/_lastRoot';
 
 app.get('/', function (req, res) {
   res.render('index', { isCity: true })
@@ -19,20 +23,25 @@ app.get('/user', function (req, res) {
   res.render('index', { isCity: false })
 })
 
-let _mamState = mamStateCreate();
+const lastRoot = fs.existsSync(LAST_ROOT_FILENAME) ? fs.readFileSync(LAST_ROOT_FILENAME).toString() : null;
+let _mamState = mamStateCreate(lastRoot);
 
 app.post('/msg', function (req, response) {
   _mamState.then(async mamState => {
     var t = new Date()
+    const payload = {
+      d: t.toLocaleDateString(),
+      data: req.body
+    };
+    //console.log(payload)
+    //return response.json(payload)
+
     const res = await publish(
       mamState,
-      {
-        d: t.toLocaleTimeString(),
-        hello: req.body.msg
-      },
+      payload
     );
-    //const nextRoot = res.mamState.channel.next_root;
     nextRoot = res.root;
+    fs.writeFileSync(LAST_ROOT_FILENAME, nextRoot)
     _mamState = Promise.resolve(res.mamState);
     response.json(mamState)
   }).catch(err => {
@@ -40,18 +49,30 @@ app.post('/msg', function (req, response) {
   })
 })
 
-// http://localhost:3000/getPrice?lat=1&long=2
+// http://localhost:3000/getPrice?lat=1&long=2&exhaust=500
 app.get('/getPrice', function (req, res) {
-  const distance = req.query.radius || 1000
+  const distance = 1000
+  const exhaust = req.query.exhaust || 50
 
   pollution(req.query.lat, req.query.lon, distance)
     .then(result => {
-      res.json({
+      const price = exhaust * result.averageEmission / 50;
+      const out = {
         status: 'ok',
         averageEmission: result.averageEmission,
-        price: result.price,
-        unit: 'cent'
-      })
+        yourEmission: exhaust,
+        prices: [
+          {
+            price,
+            unit: 'i'
+          },
+          {
+            price: price * CURRENT_IOTA_EXCHANGE,
+            unit: 'e'
+          }
+        ]
+      }
+      res.json(out)
     })
     .catch(err => {
       res.json({

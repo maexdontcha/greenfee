@@ -1,55 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Green Fee</title>
-    <link rel="stylesheet" href="/app.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-      crossorigin=""
-    />
-    <script
-      src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
-      crossorigin=""
-    ></script>
-  </head>
 
-  <body>
-    <% include navbar.ejs %>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Green Fee</title>
+  <link rel="stylesheet" href="/app.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+    crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+    integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+    crossorigin=""></script>
+</head>
 
-    <section class="section">
-      <div class="container">
-        <%if (isCity) { %>
-        <h1>Emission overview</h1>
-        <% } else{ %>
-        <h1>Robert's trip</h1>
-        <% } %>
-        <div class="map" id="themap"></div>
-      </div>
-      <%if (!isCity) { %>
-      <div class="buttons-row">
+<body>
+  <% include navbar.ejs %>
+
+  <section class="section">
+    <div class="container">
+      <%if (isCity) { %>
+      <h1>Emission overview</h1>
+      <% } else{ %>
+      <h1>Robert's trip</h1>
+      <% } %>
+      <div class="map" id="themap" data-is-city="<%= isCity %>""></div>
+    </div>
+    <%if (!isCity) { %>
+    <div class=" buttons-row">
         <p>
           <a id="reset-btn" class="button is-light">Reset</a>
           <a id="next-btn" class="button is-primary">Next</a>
         </p>
       </div>
       <% } %>
-    </section>
-    <script
-      defer
-      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
-    ></script>
-    <script>
-      var isCity =  <%= isCity %>
-    </script>
-    <script src="/app.js"></script>
-  </body>
+  </section>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <script src="/app.js"></script>
+</body>
+
 </html>
