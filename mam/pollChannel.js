@@ -74,6 +74,10 @@ let mamState = Mam.init(config.provider)
 
 function checkChannels() {
   if (!lastState) {
+    let lastState = fs.existsSync(LAST_STATE_FILENAME) ? fs.readFileSync(LAST_STATE_FILENAME).toString() : null;
+    if (lastState) {
+      lastState = JSON.parse(lastState);
+    }
     setTimeout(checkChannels, 30000);
     return; //nothing to read.
   }

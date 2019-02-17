@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const Mam = require('@iota/mam/lib/mam.client.js')
+const { asciiToTrytes, trytesToAscii } = require('@iota/converter')
 const fs = require("fs");
 const path = require('path')
 const app = express()
@@ -22,7 +23,12 @@ app.get('/', function (req, res) {
 })
 
 app.get('/user', function (req, res) {
-  res.render('index', { isCity: false })
+  const tag = config.tag + asciiToTrytes(config.licensePlate)
+  res.render('index', { isCity: false, tag, targetAddr: config.greenfeeAddress })
+})
+
+app.get('/mam', function (req, res) {
+
 })
 
 const mamState = Mam.init(config.provider, config.seed);

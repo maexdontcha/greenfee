@@ -20,21 +20,37 @@
 
   <section class="section">
     <div class="container">
-      <%if (isCity) { %>
-      <h1>Emission overview</h1>
-      <% } else{ %>
-      <h1>Robert's trip</h1>
-      <% } %>
-      <div class="map" id="themap" data-is-city="<%= isCity %>""></div>
-    </div>
-    <%if (!isCity) { %>
-    <div class=" buttons-row">
-        <p>
-          <a id="reset-btn" class="button is-light">Reset</a>
-          <a id="next-btn" class="button is-primary">Next</a>
-        </p>
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <%if (isCity) { %>
+          <h1 class="h3">Emission overview</h1>
+          <% } else{ %>
+          <h1 class="h3">Robert's trip</h1>
+          <% } %>
+
+          <div class="map" id="themap" data-is-city="<%= isCity %>"></div>
+          <%if (!isCity) { %>
+          <div class=" buttons-row">
+            <p>
+              <a id="reset-btn" class="button is-light">Reset</a>
+              <a id="next-btn" class="button is-primary">Next</a>
+            </p>
+          </div>
+          <% } %>
+        </div>
+        <%if (!isCity) { %>
+        <div class=" column" id="sidebar" data-tag="<%= tag %>" data-addr="<%=targetAddr%>">
+          <h1 class="h3">Incoming transactions</h1>
+          <div id="tbalance">
+            <div class="balances"></div>
+          </div>
+          <h1 class="h3">Your Emission log</h1>
+          <div class="emissionlog"></div>
+        </div>
+        <% } %>
       </div>
-      <% } %>
+    </div>
+
   </section>
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <script src="/app.js"></script>
