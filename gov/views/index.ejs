@@ -25,7 +25,22 @@
       <% } else{ %>
       <h1>Robert's trip</h1>
       <% } %>
-      <div class="map" id="themap" data-is-city="<%= isCity %>""></div>
+      <div class="columns">
+        <div class="column">
+          <div class="map" id="themap" data-is-city="<%= isCity %>""></div>
+        </div>
+        <div class="column is-one-quarter">
+          <nav class="panel" id="mam-messages">
+            <p class="panel-heading">emission messages</p>
+            <div class="panel-block is-loading">
+              <span class="panel-icon">
+                <i class="fas fa-spinner fa-pulse fa-fw"></i>
+              </span>
+              Loading...
+            </div>
+          </nav>
+        </div>
+      </div>
     </div>
     <%if (!isCity) { %>
     <div class=" buttons-row">
