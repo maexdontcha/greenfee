@@ -50,7 +50,8 @@ async function poll(lastState, transactions) {
 
   const result = await Mam.fetch(lastState.currentRoot, CONFIG_MODE)
 
-  if (result.messages.length >= 2) {
+  console.log(result.messages.length + " messages wait in the channel")
+  if (result.messages.length >= 3) {
     const bundle = createBundle(lastState.currentRoot, result.messages);
     bundle.lastRoot = lastState.lastRoot
     txResult = await finalizeBundle(bundle, tag);
@@ -69,12 +70,14 @@ if (lastState) {
   lastState = JSON.parse(lastState);
 }
 
-(function () {
+let mamState = Mam.init(config.provider)
+
+function checkChannels() {
   if (!lastState) {
+    setTimeout(checkChannels, 30000);
     return; //nothing to read.
   }
-
-  let mamState = Mam.init(config.provider)
+  console.log("checking...");
 
   iota.findTransactionObjects({
     addresses: [config.greenfeeAddress],
@@ -90,11 +93,12 @@ if (lastState) {
 
           //todo: the last root in the tx should be the current root.
         }).catch(err => console.dir(err))
-      } else {
-
       }
+      setTimeout(checkChannels, 10000);
     })
 
 
   }).catch(err => console.log(err))
-})()
+}
+
+checkChannels();
