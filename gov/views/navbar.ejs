@@ -4,8 +4,13 @@
       <img src="/img/GreenFee_long_light.png" width="112" height="28" />
     </a>
 
-    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false"
-      data-target="navbarBasicExample">
+    <a
+      role="button"
+      class="navbar-burger burger"
+      aria-label="menu"
+      aria-expanded="false"
+      data-target="navbarBasicExample"
+    >
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
@@ -14,12 +19,12 @@
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item">
-        Home
+      <a class="navbar-item" href="/">
+        City
       </a>
 
-      <a class="navbar-item">
-        Statistics
+      <a class="navbar-item" href="/user">
+        Robert
       </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
@@ -47,10 +52,20 @@
 
     <div class="navbar-end">
       <div class="navbar-item">
-        Stadt Stuttgart
+        <%if (isCity) { %> Stadt Stuttgart
         <figure class="image user-icon">
-          <img src="https://pbs.twimg.com/profile_images/890219447679688705/aDmBwTld_400x400.jpg"
-            alt="Placeholder image" />
+          <img
+            src="https://pbs.twimg.com/profile_images/890219447679688705/aDmBwTld_400x400.jpg"
+            alt="stuttgart"
+          />
+          <% } else{ %>
+            Robert Krüger
+            <figure class="image user-icon">
+              <img
+                src="https://media.licdn.com/dms/image/C5603AQGbLwJruynUIQ/profile-displayphoto-shrink_800_800/0?e=1555545600&v=beta&t=d0qzDDRPUJNq276tPUJdO4bVRaBcrdlLF-eKUphEx70"
+                alt="robert"
+              />
+          <% } %>
         </figure>
       </div>
     </div>

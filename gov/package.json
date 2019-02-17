@@ -4,7 +4,7 @@
   "description": "Green-fee-webserver",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "./node_modules/.bin/encore dev && node index.js",
     "test": "test"
   },
   "keywords": [
@@ -17,8 +17,10 @@
   "author": "Stefan, Stefan",
   "license": "ISC",
   "dependencies": {
+    "@iota/mam": "^0.5.0",
     "@symfony/webpack-encore": "^0.23.0",
     "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
     "copy-webpack-plugin": "^4.6.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
